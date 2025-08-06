@@ -16,21 +16,23 @@ function Students() {
   const [showForm, setShowForm] = useState(false);
   const [editStudent, setEditStudent] = useState(null);
   const [backendErrors, setBackendErrors] = useState({});
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const {register, handleSubmit, reset, formState:{errors}}=useForm();
 
-  const fetchStudents = async () => {
+  const fetchStudents = async (pageNumber = 1) => {
     try {
-      const response = await api.get("/students");
-      //console.log("API response:", response.data);
-
-      let studentData = [];
+      const response = await api.get(`/students?page=${pageNumber}`);
       if (Array.isArray(response.data?.data)) {
-        studentData = response.data.data; 
+        setStudents(response.data.data);
+        setPage(response.data.current_page);
+        setTotalPages(response.data.last_page);
       } else if (response.data && typeof response.data === "object") {
-        studentData = [response.data]; 
-      }
-      setStudents(studentData);
+        setStudents([response.data]);
+        setPage(1);
+        setTotalPages(1);
+     }
     } catch (error) {
       console.error("Error fetching students", error);
       setStudents([]);
@@ -38,6 +40,7 @@ function Students() {
       setLoading(false);
     }
   };
+
 
   const handleEditClick = (student) => {
       setEditStudent(student);  
@@ -199,6 +202,13 @@ function Students() {
             ))}
           </Grid>
         )}
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+          <Button onClick={() => fetchStudents(page - 1)} disabled={page === 1}>
+            Prev</Button>
+          <Typography sx={{ mx: 2 }}>Page {page} of {totalPages}</Typography>
+          <Button onClick={() => fetchStudents(page + 1)} disabled={page === totalPages}>
+            Next</Button>
+        </Box>
       </Box>
     </Layout>
   );

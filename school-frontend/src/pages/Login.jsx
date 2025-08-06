@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import { TextField, Button, Box, Typography,IconButton, InputAdornment} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+
 
 
 function Login(){
@@ -10,6 +12,8 @@ function Login(){
     const [usernameError, setUsernameError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [loginError, setLoginError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+
 
     const navigate = useNavigate();
 
@@ -59,15 +63,24 @@ function Login(){
             alignItems: 'center', padding: 2}}>
             <Box sx={{ width: '100%', maxWidth: 400 }}>
 
-
+                <Typography variant="h5"sx={{ mb: 2, fontWeight: 'bold', textAlign: 'center' }}>
+                          Login
+                </Typography>
                 <TextField label="Username" variant="outlined" fullWidth margin="normal"
                     value={username} onChange={(e) =>{setUsername(e.target.value);setPasswordError('');
                         setLoginError('');}}
                     error={!!usernameError}helperText={usernameError}/>
-                <TextField label="Password" type="password" variant="outlined" fullWidth
+                <TextField label="Password" type={showPassword ? "text" : "password"}
+                    variant="outlined" fullWidth
                     margin="normal" value={password} onChange={(e) =>{ setPassword(e.target.value);setPasswordError('');
                         setLoginError('');}}
-                    error={!!passwordError}helperText={passwordError}/>
+                    error={!!passwordError}helperText={passwordError}
+                    InputProps={{endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end">
+                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                            </IconButton>
+                        </InputAdornment>),}}/>
                 <Button variant="contained" type="button"color="primary" fullWidth sx={{ mt: 2 ,backgroundColor: 'black'  }} onClick={handleLogin} >
                     Login</Button>
                 {loginError && (<p style={{ color: 'red', marginTop: '5px' }}>{loginError}</p>)}

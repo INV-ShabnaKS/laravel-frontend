@@ -12,19 +12,24 @@ function Teachers() {
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editTeacher, setEditTeacher] = useState(null);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
     const {register, handleSubmit, reset, formState:{errors}}=useForm();
 
-    const fetchTeachers = async () => {
-        try {
-            const response = await api.get("/teachers");
-            setTeachers(response.data.data); 
-        } catch (error) {
-            console.error("Error fetching teachers", error);
-        }
-        finally {
-      setLoading(false);
+    const fetchTeachers = async (pageNumber = 1) => {
+      try {
+        const response = await api.get(`/teachers?page=${pageNumber}`);
+        setTeachers(response.data.data); 
+        setPage(response.data.current_page);
+        setTotalPages(response.data.last_page);
+      } catch (error) {
+        console.error("Error fetching teachers", error);
+      } finally {
+        setLoading(false);
       }
     };
+
     const handleEditClick = (teacher) => {
       setEditTeacher(teacher);  
       reset(teacher);
@@ -32,7 +37,7 @@ function Teachers() {
     };
 
     useEffect(() => {
-        fetchTeachers();
+        fetchTeachers(1);
     }, []);
 
     const onSubmit= async (data)=>{
@@ -173,10 +178,19 @@ function Teachers() {
 
                     </AccordionDetails>
                   </Accordion>
+                  
               </Grid>
             ))}
+            
           </Grid>
         )}
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+          <Button onClick={() => fetchTeachers(page - 1)} disabled={page === 1}>
+            Prev</Button>
+          <Typography sx={{ mx: 2 }}>Page {page} of {totalPages}</Typography>
+          <Button onClick={() => fetchTeachers(page + 1)} disabled={page === totalPages}>
+            Next</Button>
+        </Box>
       </Box>
     </Layout>
   );

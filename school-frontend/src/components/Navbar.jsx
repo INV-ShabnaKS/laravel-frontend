@@ -11,7 +11,7 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'black' }}>
+    <AppBar position="fixed" sx={{ backgroundColor: 'black' }}>
       <Toolbar>
         <Typography variant="h6" component="div">
           School Management

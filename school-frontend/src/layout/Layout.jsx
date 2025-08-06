@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import { useNavigate } from "react-router-dom";
 import { Box, Drawer, List, ListItemText, ListItemButton } from '@mui/material';
 
-const drawerWidth = 140;
+const drawerWidth = 180;
 
 function Layout({ children }) {
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ function Layout({ children }) {
     const menuByRole = {
         admin: ['Teachers', 'Students'],
         teacher: ['Students'],
-        student: ['My Profile']
+        student: ['Students']
     };
     const menuItems = menuByRole[role] || [];
 
@@ -27,7 +27,7 @@ function Layout({ children }) {
                 '& .MuiDrawer-paper': {
                   width: drawerWidth,
                   boxSizing: 'border-box',
-                  marginTop: '64px',justifyContent:'center',alignItems:'centers'
+                  marginTop: '64px',justifyContent:'center',alignItems:'center'
                 }
               }}>
                 <List>
@@ -43,7 +43,7 @@ function Layout({ children }) {
                 flexGrow: 1,
                 p: 3,
                 marginTop: '64px',
-                marginLeft: `${drawerWidth}px`
+                
             }}>
                 {children}
             </Box>

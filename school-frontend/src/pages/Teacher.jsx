@@ -4,14 +4,16 @@ import React, { useState, useEffect } from 'react';
 import api from "../api/axios";
 import {Box,Grid,Typography,Accordion,AccordionSummary,AccordionDetails,TextField, MenuItem, Button} from '@mui/material';
 import { useForm } from 'react-hook-form';
+import { useAuth } from '../context/AuthContext';
 
 
 function Teachers() {
-    const role = localStorage.getItem("role");
+    const {auth}=useAuth();
     const [teachers, setTeachers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editTeacher, setEditTeacher] = useState(null);
+    const [backendErrors, setBackendErrors] = useState({});
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
@@ -55,8 +57,12 @@ function Teachers() {
         setEditTeacher(null);
         setShowForm(false);
 
-      }catch(error){
-        console.error("Error saving teacher:", error);
+      }catch (error) {
+        if (error.response && error.response.status === 422) {
+          setBackendErrors(error.response.data.errors || {});
+        } else {
+          console.error("Error creating teacher:", error);
+        }
       }
     }
     const handleDelete = async (id) => {
@@ -81,7 +87,7 @@ function Teachers() {
           Teachers List
         </Typography>
 
-        {role === "admin" && (
+        {auth.role === "admin" && (
         <button onClick={() => setShowForm(!showForm)}>
             {showForm ? "Cancel" : "Add Teacher"}
         </button>)}
@@ -163,7 +169,7 @@ function Teachers() {
                       </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      {role === "admin" && (<Button variant="outlined" size="small" color='black' onClick={() => handleEditClick(teacher)}>
+                      {auth.role === "admin" && (<Button variant="outlined" size="small" color='black' onClick={() => handleEditClick(teacher)}>
                         Edit</Button>)}
 
                       <Typography>ID: {teacher.id}</Typography>
@@ -173,7 +179,7 @@ function Teachers() {
                       <Typography>Subject: {teacher.subject}</Typography>
                       <Typography>Date of Join: {teacher.date_of_join}</Typography>
                       <Typography>Status: {teacher.status}</Typography>
-                      {role === "admin" && (<Button variant="outlined" color="black" 
+                      {auth.role === "admin" && (<Button variant="outlined" color="black" 
                           onClick={() => handleDelete(teacher.id)}>Delete</Button>)}
 
                     </AccordionDetails>

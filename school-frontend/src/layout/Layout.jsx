@@ -2,18 +2,18 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import { useNavigate } from "react-router-dom";
 import { Box, Drawer, List, ListItemText, ListItemButton } from '@mui/material';
-
+import { useAuth } from '../context/AuthContext';
 const drawerWidth = 180;
 
 function Layout({ children }) {
     const navigate = useNavigate();
-    const role = localStorage.getItem('role');
+    const {auth}=useAuth()
     const menuByRole = {
         admin: ['Teachers', 'Students'],
         teacher: ['Students'],
         student: ['Students']
     };
-    const menuItems = menuByRole[role] || [];
+    const menuItems = menuByRole[auth.role] || [];
 
     return (
         <>

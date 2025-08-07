@@ -4,13 +4,14 @@ import React, { useState, useEffect } from 'react';
 import api from "../api/axios";
 import {Box,Grid,Typography,Accordion,AccordionSummary,AccordionDetails, TextField, Button, MenuItem} from '@mui/material';
 import { useForm } from "react-hook-form";
+import { useAuth } from '../context/AuthContext';
 
 
 
 
 
 function Students() {
-  const role = localStorage.getItem("role");
+  const {auth}=useAuth();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -94,7 +95,7 @@ function Students() {
         >
           Students List
         </Typography>
-        {role === "admin" && (
+        {auth.role === "admin" && (
         <button onClick={() => setShowForm(!showForm)}>
             {showForm ? "Cancel" : "Add Student"}
         </button>)}
@@ -184,7 +185,7 @@ function Students() {
                     </AccordionSummary>
                     <AccordionDetails>
                       
-                      {role === "admin" && (<Button variant="outlined" size="small" color='black' onClick={() => handleEditClick(student)}>
+                      {auth.role === "admin" && (<Button variant="outlined" size="small" color='black' onClick={() => handleEditClick(student)}>
                         Edit</Button>)}                      
                       <Typography>ID: {student.id}</Typography>
                       <Typography>Email: {student.email}</Typography>
@@ -194,7 +195,7 @@ function Students() {
                       <Typography>Date of birth: {student.date_of_birth}</Typography>
                       <Typography>Admission Date: {student.admission_date}</Typography>
                       <Typography>Status: {student.status}</Typography>
-                      {role === "admin" && (<Button variant="outlined" color="black" 
+                      {auth.role === "admin" && (<Button variant="outlined" color="black" 
                           onClick={() => handleDelete(student.id)}>Delete</Button>)}            
                     </AccordionDetails>
                   </Accordion>

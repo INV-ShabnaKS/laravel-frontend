@@ -1,13 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Button, Box, Typography } from '@mui/material';
+import { useAuth } from '../context/AuthContext';
 
 function Navbar() {
   const navigate = useNavigate();
-
+  const {logout}=useAuth();
   const handleLogout = () => {
+    
     if (!window.confirm("Are you really want to logout")) return;
-    localStorage.removeItem('token');
+    logout();
+    ///localStorage.removeItem('token');
     navigate('/login');
   };
 

@@ -3,18 +3,19 @@ import { TextField, Button, Box, Typography,IconButton, InputAdornment} from '@m
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {useAuth} from '../context/AuthContext';
 
 
 
 function Login(){
     const [username,setUsername]=useState('');
-    const[password,setPassword]=useState('');
+    const [password,setPassword]=useState('');
     const [usernameError, setUsernameError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [loginError, setLoginError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
-
+    const { login } = useAuth();
     const navigate = useNavigate();
 
 
@@ -43,8 +44,7 @@ function Login(){
         try {
             const response = await api.post('/login', {username, password,});
 
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('role', response.data.role);
+            login({role: response.data.role,token: response.data.token, user: response.data.user,});
             navigate("/dashboard");
         } catch (error) {
             if (error.response?.data?.message) {
@@ -85,9 +85,7 @@ function Login(){
                     Login</Button>
                 {loginError && (<p style={{ color: 'red', marginTop: '5px' }}>{loginError}</p>)}
 
-
             </Box>
-
         </Box>
     )
 
